@@ -151,7 +151,7 @@ input[type="checkbox"]:checked::after {
 }
 
 .text-3xs {
-  font-size: 0.625em /* 10px */
+  font-size: 0.625em; /* 10px */
 }
 
 .reset-style-btn {
@@ -279,6 +279,8 @@ input[type="checkbox"]:checked::after {
 
 .detail-content-body {
   padding: 2.0em 0 5.0em;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .filter-container {
@@ -407,7 +409,6 @@ input[type="checkbox"]:checked::after {
   display: inline-flex;
   width: 135px;
   height: 38px;
-  /*border-radius: 40px;*/
   background: linear-gradient(to right, #6699ff, #4cc3d9 100%);
 }
 
@@ -442,7 +443,6 @@ input[type="checkbox"]:checked::after {
 .btn-nav {
   width: 190px;
   height: 43px;
-  /*border-radius: 40px;*/
 }
 
 .btn-cancel,.btn-back  {
@@ -458,7 +458,6 @@ input[type="checkbox"]:checked::after {
   padding: 0.1em 1.0em;
   margin-left: 0.5em;
   background-color: #c35b5d;
-  /*border-radius: 40px;*/
 }
 
 .btn-back span {

@@ -101,7 +101,7 @@ public class MemoController {
 	}
 	
 	// 登録処理
-	@PostMapping
+	@PostMapping("/create")
 	public String postCreatePage(@ModelAttribute Memos memos) {
 		MEMO_SERVICE.save(memos);
 		return "redirect:/";

@@ -20,7 +20,7 @@
   </header>
 
   <main class="form-main">
-    <form th:action="${memo.id == null} ? @{/} : @{|/update/${memo.id}|}" th:object="${memo}" method="post">
+    <form th:action="${memo.id == null} ? @{/create} : @{|/update/${memo.id}|}" th:object="${memo}" method="post">
 
       <input type="hidden" th:field="*{id}">
 
@@ -29,10 +29,10 @@
           <span class="text-base text-blue text-bold">タイトル</span>
           <span class="rounded-40 required text-2xs text-white">必須</span>
         </p>
-        <p class="form-items-content text-sm">
-          <input type="text" th:field="*{title}" id="js-title-input" class="title-input" placeholder="タイトルを入力してください">
-          <p id="js-title-warning" class="warning-text text-2xs hidden">※タイトルは60文字以内で入力してください。</p>
-        </p>
+        <div class="form-items-content text-sm">
+          <input type="text" th:field="*{title}" id="js-title-input" placeholder="タイトルを入力してください">
+          <div id="js-title-warning" class="warning-text text-2xs hidden">※タイトルは60文字以内で入力してください。</div>
+        </div>
       </div>
 
       <div class="form-items">
@@ -57,9 +57,10 @@
           <span class="text-base text-bold text-blue">メモ</span>
           <span class="rounded-40 required text-2xs text-white">必須</span>
         </p>
-        <p class="form-items-content text-sm">
+        <div class="form-items-content text-sm">
           <textarea id="js-detail-input" th:field="*{detail}" placeholder="メモの内容を入力してください"></textarea>
-        </p>
+          <div id="js-detail-warning" class="warning-text text-2xs hidden">※本文は10000文字以内で入力してください。</div>
+        </div>
       </div>
 
       <div class="flex justify-center">

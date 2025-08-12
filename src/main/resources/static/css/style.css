@@ -154,6 +154,11 @@ input[type="checkbox"]:checked::after {
   font-size: 0.625em; /* 10px */
 }
 
+.text-wrap-anywhere {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
 .reset-style-btn {
   background: none;
   border: none;
@@ -279,8 +284,6 @@ input[type="checkbox"]:checked::after {
 
 .detail-content-body {
   padding: 2.0em 0 5.0em;
-  overflow-wrap: anywhere;
-  word-break: break-word;
 }
 
 .filter-container {

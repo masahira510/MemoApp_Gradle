@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const WARNING_DETAIL = document.getElementById('js-detail-warning');
   const SUBMIT_BTN = document.getElementById('js-submit-btn');
   const MAX_TITLE_LENGTH = 60; // タイトル文字数上限
-  const MAX_DETAIL_LENGTH = 10000; //本文文字数上限
+  const MAX_DETAIL_LENGTH = 20000; //本文文字数上限
 
   const VALIDATE_INPUT = () => {
     const TITLE = TITLE_INPUT.value.trim();

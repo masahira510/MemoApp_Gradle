@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
   <title>メモアプリ</title>
   <meta charset="utf-8">
@@ -12,7 +13,9 @@
   <script th:src="@{/js/tag_dialog.js}" defer></script>
   <script th:src="@{/js/tag_color.js}" defer></script>
 </head>
+
 <body>
+  
   <header class="memo-header">
     <h1 class="header-title text-xl">メモ一覧</h1>
   </header>
@@ -177,13 +180,13 @@
 
           <!-- メモ本文 -->
           <div class="memo-card-content">
-            <p th:text="${memo.detail}" class="memo-card-detail text-sm"></p>
+            <p th:text="${memo.detail}" class="memo-card-detail text-wrap-anywhere text-sm"></p>
           </div>
         </section>
       </div>
 
       <!-- メモ未作成時に文言表示 -->
-      <div th:if="${memos == null or memos.isEmpty()}" class="memo-not-found">
+      <div th:if="${memos == null or memos.isEmpty()}">
         <p>メモがありません。</p>
       </div>
     </div>
@@ -193,7 +196,8 @@
   <div id="delete-modal" class="modal hidden">
     <h3 class="flex-center text-base text-bold text-blue"></h3>
     <p class="flex-center text-base">を削除しますか？</p>
-    <form method="post"> <!-- JSでactionを取得 -->
+    <!-- JSでactionを取得 -->
+    <form method="post">
       <div class="flex-center confirm-button-row">
         <button type="button" class="reset-style-btn rounded-40 confirm-btn btn-cancel text-base text-white js-cancel-btn">キャンセル</button>
         <button type="submit" class="reset-style-btn rounded-40 confirm-btn btn-delete text-base text-white">削除</button>
@@ -201,5 +205,6 @@
     </form>
   </div>
   <div id="modal-mask" class="mask hidden"></div>
+
 </body>
 </html>

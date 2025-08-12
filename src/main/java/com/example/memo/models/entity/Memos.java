@@ -2,6 +2,8 @@ package com.example.memo.models.entity;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
@@ -19,6 +21,8 @@ import lombok.ToString;
 public class Memos extends BaseEntity {
 	
 	private String title;
+	
+	@Column(columnDefinition = "TEXT")
 	private String detail;
 
 	@ManyToMany

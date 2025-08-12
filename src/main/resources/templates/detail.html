@@ -15,7 +15,7 @@
 <body>
 
   <header class="detail-header">
-    <h1 th:text="${memo.title}" class="detail-header-title text-xl text-blue" ></h1>
+    <h1 th:text="${memo.title}" class="text-wrap-anywhere text-xl text-blue"></h1>
   </header>
 
   <main class="detail-main">
@@ -40,7 +40,7 @@
       </div>
 
       <!-- メモの内容 -->
-      <p th:text="${memo.detail}" class="detail-content-body text-sm"></p>
+      <p th:text="${memo.detail}" class="detail-content-body text-wrap-anywhere text-sm"></p>
     </div>
 
     <div class="flex justify-center">
@@ -52,5 +52,4 @@
   </main>
 
 </body>
-
 </html>

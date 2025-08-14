@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <title th:text="${memo.title}"></title>
+  <meta charset="utf-8">
+  <meta name="description" content="メモの詳細画面">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/modern-css-reset/dist/reset.min.css">
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <script th:src="@{/js/tag_color.js}" defer></script>
+</head>
+
+<body>
+
+  <header class="detail-header">
+    <h1 th:text="${memo.title}" class="text-wrap-anywhere text-xl text-blue"></h1>
+  </header>
+
+  <main class="detail-main">
+    <div class="detail-content-wrapper">
+      <!-- メモの登録日など -->
+      <div class="flex detail-content-info">
+        <dl class="flex content-info-created">
+          <dt class="flex-center card-label text-3xs">登録日</dt>
+          <dd class="inline-flex items-center">
+            <time th:datetime="${memo.createdAt}" th:text="${#temporals.format(memo.createdAt, 'yyyy/MM/dd HH:mm')}" class="text-3xs"></time>
+          </dd>
+        </dl>
+        <dl class="flex content-info-tag">
+          <dt class="flex-center card-label text-3xs">タグ</dt>
+          <dd>
+            <!-- タグを取得 -->
+            <ul class="flex tag-list">
+              <li th:each="tag : ${memo.tags}" th:text="${tag.name}" class="js-tag-color flex-center rounded-40 card-tag-item text-3xs"></li>
+            </ul>
+          </dd>
+        </dl>
+      </div>
+
+      <!-- メモの内容 -->
+      <p th:text="${memo.detail}" class="detail-content-body text-wrap-anywhere text-sm"></p>
+    </div>
+
+    <div class="flex justify-center">
+      <a th:href="@{'/'}" class="inline-flex justify-center items-center rounded-40 btn-nav btn-back text-base text-white">
+        <i class="fa-solid fa-circle-arrow-left"></i>
+        <span>戻る</span>
+      </a>
+    </div>
+  </main>
+
+</body>
+</html>

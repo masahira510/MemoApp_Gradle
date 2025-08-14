@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <title>メモアプリ</title>
+  <meta charset="utf-8">
+  <meta name="description" content="メモアプリ">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/modern-css-reset/dist/reset.min.css">
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <script th:src="@{/js/memo.js}" defer></script>
+  <script th:src="@{/js/tag_dialog.js}" defer></script>
+  <script th:src="@{/js/tag_color.js}" defer></script>
+</head>
+
+<body>
+  
+  <header class="memo-header">
+    <h1 class="header-title text-xl">メモ一覧</h1>
+  </header>
+
+  <main class="memo-main">
+    <div class="flex-justify-between">
+      <div class="flex">
+        <!-- 検索フォーム -->
+        <form id="js-search-form" th:action="@{/}" method="get">
+          <input type="text" name="keyword" class="search-input text-sm" placeholder="キーワードを入力">
+          <!-- form送信前：検索ボタン -->
+          <button type="submit" class="reset-style-btn memo-btn btn-search" th:unless="${isFiltered}">
+            <span class="text-white text-base">検索</span>
+          </button>
+          <!-- form送信後：リセットボタン -->
+          <button type="button" class="reset-style-btn memo-btn btn-search btn-reset" th:if="${isFiltered}" th:onclick="|location.href='@{/}'|">
+            <span class="text-white text-base">リセット</span>
+          </button>
+        </form>
+
+        <div class="flex items-center filter-sort-container">
+          <!-- フィルター -->
+          <div class="filter-container">
+            <button type="button" id="filter-btn" class="reset-style-btn memo-btn btn-filter">
+              <span class="text-white text-base">フィルター</span>
+            </button>
+
+            <div id="filter-dialog" class="filter-dialog hidden">
+              <form th:action="@{/}" method="get">
+                <p class="text-2xs text-blue text-bold">登録日の期間を指定</p>
+
+                <div class="date-range-row flex">
+                  <div class="date-range-item flex">
+                    <label class="text-3xs text-blue" for="start-date">開始日</label>
+                    <input type="date" name="from" id="start-date" class="date-input w-date text-3xs">
+                  </div>
+
+                  <div class="date-range-separator">
+                    <span class="text-3xs">~</span>
+                  </div>
+
+                  <div class="date-range-item flex">
+                    <label class="text-3xs text-blue" for="end-date">終了日</label>
+                    <div class="flex items-center gap-2">
+                      <input type="date" name="to" id="end-date" class="date-input w-date text-3xs">
+                      <span class="text-3xs end-caption">まで</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="tag-select-row">
+                  <p class="text-2xs text-blue text-bold">タグを指定</p>
+                  <div class="filter-tag-selector">
+                    <div id="js-selected-tags" class="flex items-center selected-tags js-tag-box"></div>
+                    <div id="js-tag-dialog" class="tag-dialog hidden" >
+                      <label th:each="tag : ${tags}" class="flex items-center tag-item-label">
+                        <input type="checkbox" name="tags" th:value="${tag.name}" th:data-label="${tag.name}" class="js-tag-checkbox">
+                        <span th:text="${tag.name}" class="text-base label-left"></span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="flex-center filter-buttons-row">
+                  <button type="button" class="reset-style-btn rounded-40 w-btn btn-cancel text-base text-white js-cancel-btn">キャンセル</button>
+                  <button type="submit" class="reset-style-btn rounded-40 w-btn btn-apply text-base text-white">完了</button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <!-- ソート関連 -->
+          <div class="sort-container">
+            <button type="button" id="sort-btn" class="reset-style-btn memo-btn btn-sort">
+              <span class="text-white text-base">ソート</span>
+            </button>
+
+            <div id="sort-dialog" class="sort-dialog hidden">
+              <form th:action="@{/}" method="get">
+                <!-- ソートダイアログの中身 -->
+                <div class="sort-date-row">
+                  <label class="text-2xs text-blue text-bold">登録日</label>
+                  <div class="flex sort-item-row">
+                    <label class="inline-flex items-center cursor-pointer text-3xs">
+                      <input type="radio" name="sort" value="asc" class="radio-hidden" checked>
+                      <span class="radio-custom"></span>
+                      昇順
+                    </label>
+
+                    <label class="inline-flex items-center cursor-pointer text-3xs">
+                      <input type="radio" name="sort" value="desc" class="radio-hidden">
+                      <span class="radio-custom"></span>
+                      降順
+                    </label>
+                  </div>
+                </div>
+
+                <div class="flex-center sort-button-row">
+                  <button type="button"
+                    class="reset-style-btn rounded-40 w-btn btn-cancel text-base text-white js-cancel-btn">キャンセル</button>
+                  <button type="submit"
+                    class="reset-style-btn rounded-40 w-btn btn-apply text-base text-white">完了</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 新規登録 -->
+      <div class="flex items-center">
+        <a th:href="@{/new}" class="flex-center rounded-40 create-page-btn text-base text-white"><span
+            class="text-white">新規登録</span><i class="fa-solid fa-circle-plus"></i></a>
+      </div>
+    </div>
+
+
+    <!-- 各メモ表示 -->
+    <div class="memo-main-content">
+      <!-- memosに値と空文字じゃなければ表示 -->
+      <div th:if="${memos != null and !memos.isEmpty()}" class="flex memo-container">
+        <!-- Thymeleafでメモを動的取得 -->
+        <section th:each="memo : ${memos}" th:data-url="@{|/detail/${memo.id}|}" class="js-memo memo-card">
+          <!-- メモ内のヘッダー -->
+          <div class="flex-justify-between">
+            <h2 class="memo-card-title text-lg text-blue" th:text="${memo.title}"></h2>
+
+            <div class="memo-card-header-right">
+              <button type="button" class="js-toggle-menu reset-style-btn text-base" aria-label="メモの編集・削除メニューを開く">
+                <i class="fas fa-ellipsis-h"></i>
+              </button>
+
+              <!-- メニューダイアログ -->
+              <div class="menu-dialog js-menu-dialog">
+                <button type="button" class="js-open-delete-modal reset-style-btn menu-btn text-3xs" th:data-id="${memo.id}" th:data-title="${memo.title}">
+                  <i class="fa-solid fa-trash"></i><span>削除</span>
+                </button>
+                <button type="button" class="js-redirect-edit reset-style-btn menu-btn text-3xs" th:data-url="@{|/edit/${memo.id}|}">
+                  <i class="fa-solid fa-pencil"></i><span>編集</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- メモ内の登録日とタグ -->
+          <div class="memo-card-info">
+            <dl class="flex memo-card-created-info">
+              <dt class="flex-center card-label text-3xs">登録日</dt>
+              <dd class="inline-flex items-center">
+                <time th:datetime="${memo.createdAt}" th:text="${#temporals.format(memo.createdAt, 'yyyy/MM/dd HH:mm')}" class="text-3xs"></time>
+              </dd>
+            </dl>
+            <dl class="flex">
+              <dt class="flex-center card-label text-3xs">タグ</dt>
+              <dd>
+                <ul class="js-tag-list flex card-tag-list">
+                  <li th:each="tag : ${memo.tags}" th:text="${tag.name}" class="js-tag js-tag-color flex-center rounded-40 card-tag-item text-3xs"></li>
+                </ul>
+              </dd>
+            </dl>
+          </div>
+
+          <!-- メモ本文 -->
+          <div class="memo-card-content">
+            <p th:text="${memo.detail}" class="memo-card-detail text-wrap-anywhere text-sm"></p>
+          </div>
+        </section>
+      </div>
+
+      <!-- メモ未作成時に文言表示 -->
+      <div th:if="${memos == null or memos.isEmpty()}">
+        <p>メモがありません。</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- 削除確認ダイアログ -->
+  <div id="delete-modal" class="modal hidden">
+    <h3 class="flex-center text-base text-bold text-blue"></h3>
+    <p class="flex-center text-base">を削除しますか？</p>
+    <!-- JSでactionを取得 -->
+    <form method="post">
+      <div class="flex-center confirm-button-row">
+        <button type="button" class="reset-style-btn rounded-40 confirm-btn btn-cancel text-base text-white js-cancel-btn">キャンセル</button>
+        <button type="submit" class="reset-style-btn rounded-40 confirm-btn btn-delete text-base text-white">削除</button>
+      </div>
+    </form>
+  </div>
+  <div id="modal-mask" class="mask hidden"></div>
+
+</body>
+</html>

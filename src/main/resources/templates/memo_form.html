@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <title th:text="${memo.id == null} ? 'メモ登録' : 'メモ編集'"></title>
+  <meta charset="utf-8">
+  <meta name="description" content="メモの登録画面">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/modern-css-reset/dist/reset.min.css">
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <script th:src="@{/js/memo_form.js}" defer></script>
+  <script th:src="@{/js/tag_dialog.js}" defer></script>
+</head>
+
+<body>
+
+  <header class="form-header">
+    <h1 th:text="${memo.id == null} ? 'メモ登録' : 'メモ編集'" class="header-title text-xl"></h1>
+  </header>
+
+  <main class="form-main">
+    <form th:action="${memo.id == null} ? @{/create} : @{|/update/${memo.id}|}" th:object="${memo}" method="post">
+
+      <input type="hidden" th:field="*{id}">
+
+      <div class="form-items">
+        <p class="form-items-title">
+          <span class="text-base text-blue text-bold">タイトル</span>
+          <span class="rounded-40 required text-2xs text-white">必須</span>
+        </p>
+        <div class="form-items-content text-sm">
+          <input type="text" th:field="*{title}" id="js-title-input" placeholder="タイトルを入力してください">
+          <div id="js-title-warning" class="warning-text text-2xs hidden">※タイトルは60文字以内で入力してください。</div>
+        </div>
+      </div>
+
+      <div class="form-items">
+        <p class="form-items-title">
+          <span class="text-blue text-base text-bold">タグ選択</span>
+        </p>
+        <div class="form-items-content">
+          <div class="tag-selector">
+            <div id="js-selected-tags" class="flex items-center selected-tags js-tag-box"></div>
+            <div id="js-tag-dialog" class="tag-dialog hidden">
+              <label th:each="tag : ${tags}" class="flex items-center tag-item-label">
+                <input type="checkbox" name="tags" th:value="${tag.id}" th:data-label="${tag.name}" th:checked="${#lists.contains(memo.tags, tag)}" class="js-tag-checkbox">
+                <span th:text="${tag.name}" class="text-base label-left"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-items">
+        <p class="form-items-title">
+          <span class="text-base text-bold text-blue">メモ</span>
+          <span class="rounded-40 required text-2xs text-white">必須</span>
+        </p>
+        <div class="form-items-content text-sm">
+          <textarea id="js-detail-input" th:field="*{detail}" placeholder="メモの内容を入力してください"></textarea>
+          <div id="js-detail-warning" class="warning-text text-2xs hidden">※本文は20000文字以内で入力してください。</div>
+        </div>
+      </div>
+
+      <div class="flex justify-center">
+        <a th:href="@{/}" class="inline-flex justify-center items-center rounded-40 btn-nav btn-cancel text-base text-white">キャンセル</a>
+        <button type="submit" id="js-submit-btn" class="reset-style-btn rounded-40 btn-nav btn-submit text-base text-white" th:text="${memo.id == null} ? '登録' : '更新'" disabled></button>
+      </div>
+
+    </form>
+  </main>
+
+</body>
+</html>
